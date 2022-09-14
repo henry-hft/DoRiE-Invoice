@@ -1,0 +1,88 @@
+body {
+	background-image: url('images/background.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.global-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.model-image {
+    position: relative;
+    display: block;
+}
+
+.container-fluid {
+  padding-top: 70px;
+  padding-bottom: 70px;
+  position: relative;
+}
+
+.bg-1 {
+  background-color: #4CB5F5;
+  color: white;
+}
+
+.img-2 {
+  position: absolute;
+  width: 250px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.loading-image {
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    margin-top: -25px;
+    margin-left: -25px;
+}
+ 
+form {
+    padding-top: 10px;
+    font-size: 14px;
+    margin-top: 30px;
+}
+
+pre {
+	border: 1px;
+	background-color: #D3D3D3 !important;
+}
+ 
+.card-title {
+    font-weight: 300;
+}
+ 
+.btn {
+    margin-top: 40px;
+}
+
+.image-center {
+    align-items: center;
+}
+ 
+.login-form {
+    width: 80%;
+    margin: 40px auto 40px auto;
+	position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+ 
+.sign-up {
+    text-align: center;
+    padding: 20px 0 0;
+}
+ 
+.alert {
+    margin-bottom: -30px;
+    font-size: 13px;
+    margin-top: 20px;
+}
