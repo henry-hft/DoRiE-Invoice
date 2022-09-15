@@ -1,5 +1,8 @@
 # DoRiE-Invoice
 
+Apache 2
+PHP 8.1
+
 ## Install Apache + PHP
   
 `apt install apache2`
