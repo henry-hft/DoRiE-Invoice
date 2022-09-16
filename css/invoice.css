@@ -1,0 +1,19 @@
+body { font-family: "Roboto", serif; font-size: 0.8rem; font-weight: 400; line-height: 1.4; color: #000000; }
+        h1, h2, h4, h5 { font-weight: 700; color: #000000; }
+        h1 { font-size: 2rem; }
+        h2 { font-size: 1.6rem; }
+        h4 { font-size: 1.2rem; }
+        h5 { font-size: 1rem; }
+        .table { color: #000; }
+        .table td, .table th { border-top: 1px solid #000; }
+        .table thead th { vertical-align: bottom; border-bottom: 2px solid #000; }
+
+        @page {
+            margin-top: 2.5cm;
+            margin-bottom: 2.5cm;
+        }
+
+        @page :first {
+            margin-top: 0;
+            margin-bottom: 2.5cm;
+        }

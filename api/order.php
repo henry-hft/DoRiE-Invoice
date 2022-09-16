@@ -29,19 +29,23 @@ $database = new Database();
 $db = $database->getConnection();
 
 // get product
-$query = "SELECT id, name, price, stock, available FROM products WHERE id=:id OR name=:name LIMIT 1";
+$query = "SELECT id, name, description, price, stock, available FROM products WHERE id=:id OR name=:name LIMIT 1";
 $stmt = $db->prepare($query);
 $stmt->bindParam(":id", $_GET["product"]);
 $stmt->bindParam(":name", $_GET["product"]);
 $stmt->execute();
+$stmt->debugDumpParams();
+	
+$stmt->bindColumn("id", $productId);
+$stmt->bindColumn("name", $productName);
+$stmt->bindColumn("description", $productDescription);
+$stmt->bindColumn("price", $productPrice);
+$stmt->bindColumn("stock", $productStock);
+$stmt->bindColumn("available", $productAvailability);
 
-if ($stmt->rowCount() == 1) {		
-	$stmt->bindColumn("id", $productID);
-	$stmt->bindColumn("name", $productName);
-	$stmt->bindColumn("price", $productPrice);
-	$stmt->bindColumn("stock", $productStock);
-	$stmt->bindColumn("available", $productAvailability);
-	$stmt->fetch();
+$productPriceFormatted =  str_replace(".", ",", $productPrice) . " &#8364";
+
+if ($stmt->fetch()) {
 	
 	if($productStock < 1){
 		Response::json(true, 400, "Product is out of stock", true);
@@ -57,7 +61,7 @@ if ($stmt->rowCount() == 1) {
 
 $seat = $_GET["seat"];
 $paid = 0;
-$time = time() - 3600;
+$time = time() - $invoiceDuration;
 
 // close expired invoices
 $newStatus = "expired";
@@ -88,11 +92,10 @@ $stmt->bindParam(":status", $status);
 $stmt->execute();
 
 $currentTime = time();
+		
+$stmt->bindColumn("id", $invoiceId);
 
-if ($stmt->rowCount() == 1) {		
-	$stmt->bindColumn("id", $invoiceid);
-	$stmt->fetch();
-} else {
+if (!$stmt->fetch()){
 	$query = "INSERT INTO invoices (seat, status, time) VALUES (:seat, :status, :time)";
     $stmt = $db->prepare($query);
     $stmt->bindParam(":seat", $seat);
@@ -101,7 +104,7 @@ if ($stmt->rowCount() == 1) {
 
     if ($stmt->execute()) {
         // new invoice created
-		$invoiceid = $db->lastInsertId();
+		$invoiceId = $db->lastInsertId();
     } else {
         Response::json(true, 400, "Could not create a new invoice", true);
     }
@@ -112,19 +115,35 @@ $newProductStock = $productStock - 1;
 $query = "UPDATE products SET stock=:stock WHERE id=:id";
 $stmt = $db->prepare($query);
 $stmt->bindParam(":stock", $newProductStock);
-$stmt->bindParam(":id", $productID);
+$stmt->bindParam(":id", $productId);
 
 if ($stmt->execute()) {
 	// stock successfully decremented
 } else {
     Response::json(true, 400, "Could not change product stock", true);
 }
+
+// add event
+$image = "images/products/$productId.png";
+$text = "Seat: $seat<br>$productName: $productDescription<br>$productPriceFormatted";
+
+$query = "INSERT INTO events (image, text, duration) VALUES (:image, :text, :duration)";
+$stmt = $db->prepare($query);
+$stmt->bindParam(":image", $image);
+$stmt->bindParam(":text", $text);
+$stmt->bindParam(":duration", $payEvent);
+
+if ($stmt->execute()) {
+        // new event created
+} else {
+    Response::json(true, 400, "Could not create a new event", true);
+}
 										
 // add product to order
 $query = "INSERT INTO orders (invoiceid, productid, price, time) VALUES (:invoiceid, :productid, :price, :time)";
     $stmt = $db->prepare($query);
-    $stmt->bindParam(":invoiceid", $invoiceid);
-    $stmt->bindParam(":productid", $productID);
+    $stmt->bindParam(":invoiceid", $invoiceId);
+    $stmt->bindParam(":productid", $productId);
 	$stmt->bindParam(":price", $productPrice);
     $stmt->bindParam(":time", $currentTime);
 

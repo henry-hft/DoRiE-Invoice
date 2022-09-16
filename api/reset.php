@@ -49,10 +49,21 @@ if(!$all){
 
 
 if ($stmt->execute()) {
-	// expired orders successfully closed
-	Response::json(false, 200, "Invoices successfully reseted", false);
+	// all active orders successfully closed
 } else {
     Response::json(true, 400, "The invoices could not be reset", true);
 }
 
+
+// delete all events
+$query = "DELETE FROM events";
+$stmt = $db->prepare($query);
+
+if ($stmt->execute()) {
+	// all events successfully deleted
+} else {
+    Response::json(true, 400, "Could not delete all events", true);
+}
+
+Response::json(false, 200, "Application successfully reseted", false);
 ?>

@@ -38,11 +38,11 @@ $stmt->bindParam(":time", $time);
 $stmt->bindParam(":status", $status);
 $stmt->execute();
 
-if ($stmt->rowCount() == 1) {		
-	$stmt->bindColumn("id", $invoiceID);
-	$stmt->fetch();
-	
-	$url = urlencode("$baseUrl/invoice.html?id=$invoiceID");
+$stmt->bindColumn("id", $invoiceId);
+$invoiceIdFormatted = sprintf("%04d", $invoiceId);
+
+if ($stmt->fetch()) {
+	$url = urlencode("$baseUrl/invoice.html?id=$invoiceId");
 	$response = ["error" => false, "qrcode" => "$baseUrl/qrcode.php?url=$url"];
 } else {
 	Response::json(true, 400, "No active invoice found for seat $seat", true);
@@ -50,17 +50,33 @@ if ($stmt->rowCount() == 1) {
 
 // update invoice
 
-$newStatus = "ready";
+$newStatus = "completed";
 
 $query = "UPDATE invoices SET status=:newStatus WHERE id=:id";
 $stmt = $db->prepare($query);
 $stmt->bindParam(":newStatus", $newStatus);
-$stmt->bindParam(":id", $invoiceID);
+$stmt->bindParam(":id", $invoiceId);
 
 if ($stmt->execute()) {
-	// order status successfully set to ready
+	// order status successfully set to completed
 } else {
-    Response::json(true, 400, "Could not set invoice status to ready", true);
+    Response::json(true, 400, "Could not set invoice status to completed", true);
+}
+
+// add event
+$image = "$baseUrl/qrcode.php?url=$url";
+$text = "Seat: $seat | Invoice: #$invoiceIdFormatted";
+
+$query = "INSERT INTO events (image, text, duration) VALUES (:image, :text, :duration)";
+$stmt = $db->prepare($query);
+$stmt->bindParam(":image", $image);
+$stmt->bindParam(":text", $text);
+$stmt->bindParam(":duration", $qrCodeEvent);
+
+if ($stmt->execute()) {
+    // new event created
+} else {
+    Response::json(true, 400, "Could not create a new event", true);
 }
 
 echo json_encode($response);

@@ -1,11 +1,7 @@
 <?php
 class Database
 {
-    // specify database credentials
-    private $host = "localhost";
-    private $db_name = "ims";
-    private $username = "ims";
-    private $password = "ZM/0El0Bzl_0MwPE";
+    private $dbFile  = "db/dorie.db";
     public $conn;
 
     // get the database connection
@@ -14,12 +10,8 @@ class Database
         $this->conn = null;
       
         try {
-            $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->db_name,
-                $this->username,
-                $this->password
-            );
-            $this->conn->exec("set names utf8");
+            $this->conn = new PDO("sqlite:" . $this->dbFile);
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $exception) {
             echo "Connection error: " . $exception->getMessage();
         }

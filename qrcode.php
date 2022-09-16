@@ -12,7 +12,7 @@ $options = new QROptions(
     'eccLevel' => QRCode::ECC_L,
     'outputType' => QRCode::OUTPUT_IMAGE_PNG,
     'version' => 5,
-	'scale' => 20,
+	  'scale' => 20,
   ]
 );
 

@@ -27,14 +27,13 @@ $query = "SELECT seat, status, paid, time FROM invoices WHERE id=:id LIMIT 1";
 $stmt = $db->prepare($query);
 $stmt->bindParam(":id", $invoiceID);
 $stmt->execute();
+		
+$stmt->bindColumn("seat", $seat);
+$stmt->bindColumn("status", $status);
+$stmt->bindColumn("paid", $paid);
+$stmt->bindColumn("time", $time);
 
-if ($stmt->rowCount() == 1) {		
-	$stmt->bindColumn("seat", $seat);
-	$stmt->bindColumn("status", $status);
-	$stmt->bindColumn("paid", $paid);
-	$stmt->bindColumn("time", $time);
-	$stmt->fetch();
-	
+if ($stmt->fetch()) {
 	$newTime = date("Y-m-d H:i:s", date($time));
 	$formattedInvoiceID = sprintf('%04d', $_GET["id"]); // Add leading zeros: 0001 (4 digits)
 	
@@ -48,14 +47,16 @@ $query = "SELECT id, name, description FROM products";
 //$query = "SELECT id, name, description, price FROM products";
 $stmt = $db->prepare($query);
 $stmt->execute();
+		
 
-if ($stmt->rowCount() > 0) {		
-	// initialise an array for the results
-	$products = array();
-	while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-		$products[] = $row;
-	}
-} else {
+// initialise an array for the results
+$products = array();
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+	$products[] = $row;
+	$count++;
+}
+
+if (count($products) > 0)){
 	Response::json(true, 400, "No products found", true);
 }
 
@@ -65,20 +66,20 @@ $stmt = $db->prepare($query);
 $stmt->bindParam(":id", $invoiceID);
 $stmt->execute();
 
-if ($stmt->rowCount() > 0) {		
-	$items = array();
-	while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-		$key = array_search($row["productid"], array_column($products, 'id'));
-		$newTime = date("Y-m-d H:i:s", date($row["time"]));
-		$response["total"] += $row["price"];
-		if ($key !== false) { // product  found
-			$items[] = ["id" => $row["productid"], "price" => $row["price"], "name" => $products[$key]["name"], "description" => $products[$key]["description"], "time" => $newTime];
-		} else { // product not found
-			$items[] = ["id" => "0", "price" => $row["price"], "name" => "Unknown", "description" => "", "time" => $newTime];
-		}
+$items = array();
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+	$key = array_search($row["productid"], array_column($products, 'id'));
+	$newTime = date("Y-m-d H:i:s", date($row["time"]));
+	$response["total"] += $row["price"];
+	if ($key !== false) { // product  found
+		$items[] = ["id" => $row["productid"], "price" => $row["price"], "name" => $products[$key]["name"], "description" => $products[$key]["description"], "time" => $newTime];
+	} else { // product not found
+		$items[] = ["id" => "0", "price" => $row["price"], "name" => "Unknown", "description" => "", "time" => $newTime];
 	}
-	$response["items"] = $items;
-} else {
+}
+$response["items"] = $items;
+	
+if (count($items) > 0)){
 	Response::json(true, 400, "The order is empty", true);
 }
 
