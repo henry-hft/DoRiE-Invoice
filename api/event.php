@@ -25,7 +25,7 @@ $stmt->bindColumn("duration", $duration);
 if ($stmt->fetch()) {
 	$response = ["error" => false, "image" => $image, "text" => $text, "duration" => (int) $duration * 1000];
 } else {
-	$response = ["error" => false, "image" => "", "duration" => 0];
+	$response = ["error" => false, "image" => "", "text" => "", "duration" => 0];
 }
 
 // delete event
