@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // Base URL
-$baseUrl = "http://116.203.93.23";
+$baseUrl = "http://localhost";
 
 // Number of available seats
 $availableSeats = 2;

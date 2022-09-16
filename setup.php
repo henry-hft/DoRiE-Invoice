@@ -15,7 +15,7 @@ $database = new SQLite3($dbFile);
 chmod($dbFile, 0775);
 		
 $database->exec("CREATE TABLE `invoices` (
-				`id` int(11) NOT NULL PRIMARY KEY AUTOINCREMENT,
+				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 				`seat` int(1) NOT NULL,
 				`status` varchar(255) NOT NULL,
 				`paid` int(1) NOT NULL DEFAULT 0,
@@ -23,7 +23,7 @@ $database->exec("CREATE TABLE `invoices` (
 				);");
 						
 $database->exec("CREATE TABLE `orders` (
-				`id` int(11) NOT NULL PRIMARY KEY AUTOINCREMENT,
+				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 				`invoiceid` int(11) NOT NULL,
 				`productid` varchar(11) NOT NULL,
 				`price` decimal(11,2) NOT NULL,
@@ -31,7 +31,7 @@ $database->exec("CREATE TABLE `orders` (
 				);");
 		
 $database->exec("CREATE TABLE `products` (
-				`id` int(11) NOT NULL PRIMARY KEY AUTOINCREMENT,
+				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 				`name` varchar(255) NOT NULL,
 				`description` varchar(255) NOT NULL,
 				`price` decimal(11,2) NOT NULL,
@@ -40,7 +40,7 @@ $database->exec("CREATE TABLE `products` (
 				);");			
 
 $database->exec("CREATE TABLE `events` (
-				`id` int(11) NOT NULL PRIMARY KEY AUTOINCREMENT,
+				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 				`image` varchar(255) NOT NULL,
 				`text` varchar(255) NOT NULL,
 				`duration` varchar(11) NOT NULL
