@@ -13,6 +13,7 @@ if (file_exists($dbFile)) {
 
 $database = new SQLite3($dbFile);
 chmod($dbFile, 0775);
+chown($dbFile, "www-data:www-data");
 		
 $database->exec("CREATE TABLE `invoices` (
 				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

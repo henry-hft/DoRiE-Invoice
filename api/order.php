@@ -34,7 +34,6 @@ $stmt = $db->prepare($query);
 $stmt->bindParam(":id", $_GET["product"]);
 $stmt->bindParam(":name", $_GET["product"]);
 $stmt->execute();
-$stmt->debugDumpParams();
 	
 $stmt->bindColumn("id", $productId);
 $stmt->bindColumn("name", $productName);
@@ -43,9 +42,9 @@ $stmt->bindColumn("price", $productPrice);
 $stmt->bindColumn("stock", $productStock);
 $stmt->bindColumn("available", $productAvailability);
 
-$productPriceFormatted =  str_replace(".", ",", $productPrice) . " &#8364";
-
 if ($stmt->fetch()) {
+	
+	$productPriceFormatted =  str_replace(".", ",", $productPrice) . " &#8364";
 	
 	if($productStock < 1){
 		Response::json(true, 400, "Product is out of stock", true);

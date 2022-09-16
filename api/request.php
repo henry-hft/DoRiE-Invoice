@@ -39,9 +39,9 @@ $stmt->bindParam(":status", $status);
 $stmt->execute();
 
 $stmt->bindColumn("id", $invoiceId);
-$invoiceIdFormatted = sprintf("%04d", $invoiceId);
 
 if ($stmt->fetch()) {
+	$invoiceIdFormatted = sprintf("%04d", $invoiceId);
 	$url = urlencode("$baseUrl/invoice.html?id=$invoiceId");
 	$response = ["error" => false, "qrcode" => "$baseUrl/qrcode.php?url=$url"];
 } else {
