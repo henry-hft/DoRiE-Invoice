@@ -1,7 +1,8 @@
 # DoRiE-Invoice
 
-Apache 2
-PHP 8.1
+Apache 2<br>
+PHP 8.1<br>
+SQLite
 
 ## Install Apache + PHP
   
