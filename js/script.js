@@ -17,6 +17,7 @@ $(document).ready((() => {
 		} else {
 			interval = 5000;
 			document.getElementById("mainPhoto").src = images[index];
+			$('#text').html("");
 		if (index == 2) {
 			index = 0;
 		} else {
@@ -42,7 +43,8 @@ $(document).ready((() => {
 			
 			if(data.error === false){
 				interval = data.duration;
-				image = data.image
+				image = data.image;
+				text = data.text;
 			} else {
 				qrcode = "";
 			}
