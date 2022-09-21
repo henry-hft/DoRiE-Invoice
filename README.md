@@ -12,9 +12,9 @@ SQLite
 
 `apt install ca-certificates apt-transport-https lsb-release gnupg curl nano unzip git`
 
-`curl -fsSL https://packages.sury.org/php/apt.gpg -o /usr/share/keyrings/php-archive-keyring.gpg`
+`apt install software-properties-common -y`
 
-`echo "deb [signed-by=/usr/share/keyrings/php-archive-keyring.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list`
+`add-apt-repository ppa:ondrej/php`
 
 `apt update`
 
