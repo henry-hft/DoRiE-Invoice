@@ -31,3 +31,12 @@ SQLite
 `php setup.php`
 
 `service apache2 restart`
+
+
+## Configuration
+
+nano api/config/core.php
+<br>
+Ip address or domain of the server:
+<br>
+`$baseUrl = "http://127.0.0.1";`
