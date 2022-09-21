@@ -40,3 +40,11 @@ nano api/config/core.php
 Ip address or domain of the server:
 <br>
 `$baseUrl = "http://127.0.0.1";`
+
+## API Documentation
+
+## Endpoints
+
+- order.php - Order a product
+- request.php - Get an invoice
+- reset.php - Close all active invoices
