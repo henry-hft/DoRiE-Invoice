@@ -55,7 +55,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 	$products[] = $row;
 }
 
-if (count($products) > 0) {
+if (count($products) == 0) {
 	Response::json(true, 400, "No products found", true);
 }
 
@@ -78,7 +78,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 }
 $response["items"] = $items;
 	
-if (count($items) > 0) {
+if (count($items) == 0) {
 	Response::json(true, 400, "The order is empty", true);
 }
 
