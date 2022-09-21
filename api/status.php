@@ -67,8 +67,8 @@ if($_GET["function"] == "pay"){
 	}
 
 	// add event
-	$image = "images/cancel.png";
-	$text = "Invoice #$invoiceIdFormatted successfully canceled";
+	$image = "images/pay.png";
+	$text = "Invoice #$invoiceIdFormatted successfully paid";
 
 	$query = "INSERT INTO events (image, text, duration) VALUES (:image, :text, :duration)";
 	$stmt = $db->prepare($query);
@@ -107,8 +107,8 @@ if($_GET["function"] == "cancel"){
 	}
 
 	// add event
-	$image = "images/pay.png";
-	$text = "Invoice #$invoiceIdFormatted successfully paid";
+	$image = "images/cancel.png";
+	$text = "Invoice #$invoiceIdFormatted successfully canceled";
 	
 	$query = "INSERT INTO events (image, text, duration) VALUES (:image, :text, :duration)";
 	$stmt = $db->prepare($query);
