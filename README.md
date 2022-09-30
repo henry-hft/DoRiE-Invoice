@@ -48,3 +48,15 @@ Ip address or domain of the server:
 - order.php - Order a product
 - request.php - Get an invoice
 - reset.php - Close all active invoices
+
+## Examples
+
+`http://localhost/api/order.php?seat=1&product=Drink`
+<br>
+`http://localhost/api/order.php?seat=1product=2`
+<br>
+`http://localhost/api/request.php?seat=1`
+<br>
+`http://localhost/api/request.php?seat=2`
+<br>
+`http://localhost/api/reset.php`
