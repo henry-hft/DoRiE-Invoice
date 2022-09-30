@@ -70,10 +70,11 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 	$key = array_search($row["productid"], array_column($products, 'id'));
 	$newTime = date("Y-m-d H:i:s", date($row["time"]));
 	$response["total"] += $row["price"];
+	$formattedPrice = number_format((float)$row["price"], 2, '.', '');
 	if ($key !== false) { // product  found
-		$items[] = ["id" => $row["productid"], "price" => $row["price"], "name" => $products[$key]["name"], "description" => $products[$key]["description"], "time" => $newTime];
+		$items[] = ["id" => $row["productid"], "price" => $formattedPrice, "name" => $products[$key]["name"], "description" => $products[$key]["description"], "time" => $newTime];
 	} else { // product not found
-		$items[] = ["id" => "0", "price" => $row["price"], "name" => "Unknown", "description" => "", "time" => $newTime];
+		$items[] = ["id" => "0", "price" => $formattedPrice, "name" => "Unknown", "description" => "", "time" => $newTime];
 	}
 }
 $response["items"] = $items;
