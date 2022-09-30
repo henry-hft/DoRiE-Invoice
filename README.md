@@ -22,7 +22,7 @@ SQLite
 
 `sudo apt install sqlite3 sqlitebrowser`
 
-`sudo cd /var/www/html`
+`cd /var/www/html`
 
 `sudo git clone https://github.com/henry-hft/DoRiE-Invoice`
 
@@ -40,6 +40,19 @@ nano api/config/core.php
 Ip address or domain of the server:
 <br>
 `$baseUrl = "http://127.0.0.1";`
+
+## Update
+
+`cd /var/www/html`
+
+`sudo rm -r *`
+
+`sudo git clone https://github.com/henry-hft/DoRiE-Invoice`
+
+`sudo mv DoRiE-Invoice/* .`
+
+`sudo php setup.php`
+
 
 ## API Documentation
 
