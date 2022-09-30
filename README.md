@@ -54,9 +54,10 @@ Ip address or domain of the server:
 `http://localhost/api/order.php?seat=1&product=Drink`
 <br>
 `http://localhost/api/order.php?seat=1product=2`
-<br>
+<br><br>
 `http://localhost/api/request.php?seat=1`
 <br>
 `http://localhost/api/request.php?seat=2`
-<br>
+<br><br>
 `http://localhost/api/reset.php`
+<br>
