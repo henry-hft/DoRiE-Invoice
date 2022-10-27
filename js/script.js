@@ -3,6 +3,7 @@ $(document).ready((() => {
 	var image = "";
 	var text = "";
 	var interval = 5000;
+	var permanent = false;
 
 	images[0] = ['images/ims-chips.png'];
 	images[1] = ['images/fzi.png'];
@@ -11,7 +12,7 @@ $(document).ready((() => {
 
 	function change() {
 		getEvent();
-		if (image !== "" && interval > 0) {
+		if ((image !== "" || text !== "") && interval > 0) {
 			document.getElementById("mainPhoto").src = image;
 			$('#text').html(text);
 		} else {
@@ -42,9 +43,27 @@ $(document).ready((() => {
 		.then(function(data) {
 			
 			if(data.error === false){
-				interval = data.duration;
-				image = data.image;
-				text = data.text;
+				
+				if ((data.image !== "" || data.text !== "") && data.duration < 0) {
+					permanent = true;
+					
+					interval = 5000;
+					image = data.image;
+					text = data.text;
+					
+				} else if (data.image === "" && data.text === "" && data.duration < 0) {
+					permanent = false;
+					
+					image = "";
+					text = "";
+				}
+				
+				if(!permanent){
+					interval = data.duration;
+					image = data.image;
+					text = data.text;
+				}
+				
 			} else {
 				qrcode = "";
 			}
