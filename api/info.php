@@ -29,7 +29,7 @@ $image = empty($_GET["image"]) ? '' : "images/" . $_GET["image"];
 
 // check if image exists
 if($filename != ""){
-	if (!file_exists("../images/$filename")) {
+	if (!file_exists("../$filename")) {
 		Response::json(true, 400, "Image does not exist", true);
 	}
 }
