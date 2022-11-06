@@ -42,9 +42,9 @@ $(document).ready((() => {
 					$("#paid").addClass("badge-danger");
 					$('#paid').text("Unpaid")
 					
-					if(newRecord.status !== "canceled"){
-						$("#button_cancel").prop("disabled", false);
-						$("#button_pay").prop("disabled", false);
+					if(newRecord.status === "canceled" || newRecord.paid == 1){
+						$("#button_cancel").prop("disabled", true);
+						$("#button_pay").prop("disabled", true);
 					}
 				}
 				
@@ -76,7 +76,8 @@ $(document).ready((() => {
             const newRecord = await response.json();
             if (newRecord.error == false) {
 				if(!alert(newRecord.message)){
-					window.location.reload();  
+					//window.location.reload();  
+					getOrder(url.searchParams.get('id'))
 				}
             } else {
                 alert(newRecord.message)
@@ -98,7 +99,8 @@ $(document).ready((() => {
             const newRecord = await response.json();
             if (newRecord.error == false) {
                 if(!alert(newRecord.message)){
-					window.location.reload();  
+					//window.location.reload();  
+					getOrder(url.searchParams.get('id'))
 				}
             } else {
                 alert(newRecord.message)

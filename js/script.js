@@ -4,6 +4,7 @@ $(document).ready((() => {
 	var text = "";
 	var interval = 5000;
 	var permanent = false;
+	var qrCodeChecks = 0;
 
 	images[0] = ['images/ims-chips.png'];
 	images[1] = ['images/fzi.png'];
@@ -12,6 +13,13 @@ $(document).ready((() => {
 
 	function change() {
 		getEvent();
+		
+		if(image === "" && text !== ""){
+			$("#text").css("padding-top", "400px");
+		} else {
+			$("#text").css("padding-top", "0px");
+		}
+		
 		if ((image !== "" || text !== "") && interval > 0) {
 			document.getElementById("mainPhoto").src = image;
 			$('#text').html(text);
@@ -24,10 +32,8 @@ $(document).ready((() => {
 		} else {
 			index++;
 		}
-		}
+	}
 		
-		
-
 	setTimeout(change, interval);
 	}
 
@@ -44,28 +50,49 @@ $(document).ready((() => {
 			
 			if(data.error === false){
 				
-				if ((data.image !== "" || data.text !== "") && data.duration < 0) {
-					permanent = true;
+				if(qrCodeChecks > 0){
+					if(data.text == "Invoice opened"){
+						qrCodeChecks = 0;
+						interval = data.duration;
+					} else {
+						qrCodeChecks--;
+						if(qrCodeChecks == 0){
+							interval = 1000;
+						}
+					}
+				} else {
+				
+					if ((data.image !== "" || data.text !== "") && data.duration < 0) {
+						permanent = true;
 					
-					interval = 5000;
-					image = data.image;
-					text = data.text;
+						interval = 5000;
+						image = data.image;
+						text = data.text;
 					
-				} else if (data.image === "" && data.text === "" && data.duration < 0) {
-					permanent = false;
+					} else if (data.image === "" && data.text === "" && data.duration < 0) {
+						permanent = false;
 					
-					image = "";
-					text = "";
+						image = "";
+						text = "";
+					}
+				
+					if(!permanent){
+					
+						if((data.image).includes("qrcode.php")){
+							qrCodeChecks = data.duration / 5000;
+							interval = 5000;
+						} else {
+							interval = data.duration;
+						}
+						image = data.image;
+						text = data.text;
+					}
 				}
 				
-				if(!permanent){
-					interval = data.duration;
-					image = data.image;
-					text = data.text;
-				}
 				
 			} else {
-				qrcode = "";
+				text = "Unknown error";
+				interval = 5000;
 			}
 		})
 		.catch(function(error) {

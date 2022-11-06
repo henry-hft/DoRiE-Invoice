@@ -27,14 +27,6 @@ $db = $database->getConnection();
 $text = empty($_GET["text"]) ? '' : $_GET["text"];
 $image = empty($_GET["image"]) ? '' : "images/" . $_GET["image"];
 
-// check if image exists
-if($image != ""){
-	if (!file_exists("../$image")) {
-		Response::json(true, 400, "Image does not exist", true);
-	}
-}
-
-
 if(!isset($duration)){
 	$duration = $_GET["duration"];
 }

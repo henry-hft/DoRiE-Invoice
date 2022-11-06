@@ -26,27 +26,100 @@ $db = $database->getConnection();
 
 $seat = $_GET["seat"];
 $paid = 0;
-$time = time() - 3600;
+$time = time() - $invoiceDuration;
 $status = "active";
+$requested = "0";
 
 // get latest invoice
-$query = "SELECT id FROM invoices WHERE seat=:seat AND paid=:paid AND time>=:time AND status=:status ORDER BY id DESC LIMIT 1";
+$query = "SELECT id FROM invoices WHERE seat=:seat AND paid=:paid AND time>=:time AND status=:status AND requested=:requested ORDER BY id DESC LIMIT 1";
 $stmt = $db->prepare($query);
 $stmt->bindParam(":seat", $seat);
 $stmt->bindParam(":paid", $paid);
 $stmt->bindParam(":time", $time);
 $stmt->bindParam(":status", $status);
+$stmt->bindParam(":requested", $requested);
 $stmt->execute();
 
 $stmt->bindColumn("id", $invoiceId);
+//$stmt->bindColumn("requested", $requested);
 
 if ($stmt->fetch()) {
-	$invoiceIdFormatted = sprintf("%04d", $invoiceId);
-	$url = urlencode("$baseUrl/invoice.html?id=$invoiceId");
-	$response = ["error" => false, "qrcode" => "$baseUrl/qrcode.php?url=$url"];
+	
+	// set invoice to payment mode
+
+	$newStatus = "completed";
+	$requested = time();
+
+	$query = "UPDATE invoices SET status=:status, requested=:requested WHERE id=:id";
+	$stmt = $db->prepare($query);
+	$stmt->bindParam(":status", $newStatus);
+	$stmt->bindParam(":requested", $requested);
+	$stmt->bindParam(":id", $invoiceId);
+
+	if ($stmt->execute()) {
+		// order status successfully set to completed
+		$invoiceIdFormatted = sprintf("%04d", $invoiceId);
+		$url = urlencode("$baseUrl/invoice.html?id=$invoiceId");
+		$response = ["error" => false, "qrcode" => "$baseUrl/qrcode.php?url=$url"];
+	} else {
+		Response::json(true, 400, "Could not set invoice status to completed", true);
+	}
+	
 } else {
-	Response::json(true, 400, "No active invoice found for seat $seat", true);
+	
+	// check if there is an invoice in payment mode
+	
+	$statusCompleted = "completed";
+	$statusCanceled = "canceled";
+	$requestedTime = time() - $paymentModeDuration;
+	
+	$query = "SELECT id, status, paid FROM invoices WHERE seat=:seat AND time>=:time AND requested>=:requested AND (status=:statusCompleted OR status=:statusCanceled) ORDER BY id DESC LIMIT 1";
+	$stmt = $db->prepare($query);
+	$stmt->bindParam(":seat", $seat);
+	$stmt->bindParam(":time", $time);
+	$stmt->bindParam(":requested", $requestedTime);
+	$stmt->bindParam(":statusCompleted", $statusCompleted);
+	$stmt->bindParam(":statusCanceled", $statusCanceled);
+	$stmt->execute();
+
+	$stmt->bindColumn("id", $id);
+	$stmt->bindColumn("status", $newStatus);
+	$stmt->bindColumn("paid", $paidValue);
+
+	if ($stmt->fetch()) {
+		
+		// close invoice
+		if($newStatus == $statusCanceled OR $paidValue == 1){
+			
+			$newRequested = "-1";
+		
+			$query = "UPDATE invoices SET requested=:requested WHERE id=:id";
+			$stmt = $db->prepare($query);
+			$stmt->bindParam(":requested", $newRequested);
+			$stmt->bindParam(":id", $id);
+
+			if ($stmt->execute()) {
+				// invoice successfully closed
+			} else {
+				Response::json(true, 400, "Could not close the inovice", true);
+			}
+		}
+		
+		if($newStatus == $statusCanceled){
+			Response::json(true, 400, "The invoice for seat $seat was canceled", true);
+		}
+		
+		if($paidValue == 0){
+			Response::json(true, 400, "Active invoice in payment mode for seat $seat", true);
+		} else {
+			Response::json(true, 400, "The invoice for seat $seat was successfully paid", true);
+		}
+		
+	} else {
+		Response::json(true, 400, "No active invoice found for seat $seat", true);
+	}
 }
+
 
 // update invoice
 

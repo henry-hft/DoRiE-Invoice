@@ -21,8 +21,11 @@ $payEvent = 5; // in seconds
 // Cancel event notification duration
 $cancelEvent = 5; // in seconds
 
-// QR-Code event notification duration
-$qrCodeEvent = 30; // in seconds
+// Max. QR-Code event notification duration (should be divisible by 5)
+$qrCodeEvent = 120; // in seconds
+
+// Max. invoice payment mode duration
+$paymentModeDuration = 300; // in seconds
 
 // required headers
 header("Access-Control-Allow-Origin: * ");

@@ -21,6 +21,7 @@ $database->exec("CREATE TABLE `invoices` (
 				`seat` int(1) NOT NULL,
 				`status` varchar(255) NOT NULL,
 				`paid` int(1) NOT NULL DEFAULT 0,
+				`requested` varchar(31) DEFAULT '0' NOT NULL,
 				`time` varchar(31) NOT NULL
 				);");
 						

@@ -84,7 +84,7 @@ if (count($items) == 0) {
 }
 
 // update invoice
-
+if($status != "canceled"){
 $newStatus = "completed";
 
 $query = "UPDATE invoices SET status=:newStatus WHERE id=:id";
@@ -97,9 +97,26 @@ if ($stmt->execute()) {
 } else {
     Response::json(true, 400, "Could not set invoice status to completed", true);
 }
-
+}
 // add two decimal places
 $response["total"] = number_format((float)$response["total"], 2, '.', '');
+
+// add event
+$image = "";
+$text = "Invoice opened";
+$duration = 1;
+
+$query = "INSERT INTO events (image, text, duration) VALUES (:image, :text, :duration)";
+$stmt = $db->prepare($query);
+$stmt->bindParam(":image", $image);
+$stmt->bindParam(":text", $text);
+$stmt->bindParam(":duration", $duration);
+
+if ($stmt->execute()) {
+    // new event created
+} else {
+    Response::json(true, 400, "Could not create a new event", true);
+}
 
 echo json_encode($response);
 ?>
