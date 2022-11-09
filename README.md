@@ -1,5 +1,9 @@
 # DoRiE-Invoice
 
+<img src="images/ims-chips.png"
+     alt="Institut für Mikroelektronik Stuttgart (IMS CHIPS)"
+     style="width: 500px;" />
+
 Apache 2<br>
 PHP 8.1<br>
 SQLite
